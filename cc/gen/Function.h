@@ -17,7 +17,7 @@ namespace cc {
 		vector<Block> blocks;
 		
 		Function(const char* name, FunctionType* ftype, Module* parent)
-			: Value(ftype, name), ftype(ftype), parent(parent) {};
+			: Value(ftype, name, GlobalValueKind), ftype(ftype), parent(parent) {};
 
 		Block* appendBlock(const char* name);
 

@@ -47,22 +47,22 @@ namespace cc {
 	string FunctionType::dump() {
 		string result = "func(";
 
+		if (returnType) {
+			result += returnType->dump();
+			result += ")";
+		} else
+			result += "void)";
+
 		for (uint32_t i = 0; i < args.size; ++i) {
 			if (i > 0) result += ", ";
 			result += args[i]->dump();
 		}
 
 		if (vararg) {
-			if (!args.empty())
+			if (args.size > 0)
 				result += ", ";
 			result += "...";
 		}
-
-		if (returnType) {
-			result += ") -> ";
-			result += returnType->dump();
-		} else
-			result += ") -> void";
 
 		return result;
 	}

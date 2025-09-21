@@ -14,8 +14,8 @@ namespace cc {
 	public:
 		Context()
 			: boolTy(1, false),
-			charTy(1, true), shortTy(16, true), intTy(32, true), longTy(64, true),
-			ucharTy(1, false), ushortTy(16, false), uintTy(32, false), ulongTy(64, false),
+			charTy(8, true), shortTy(16, true), intTy(32, true), longTy(64, true),
+			ucharTy(8, false), ushortTy(16, false), uintTy(32, false), ulongTy(64, false),
 			floatTy(FloatTypeID), doubleTy(DoubleTypeID),
 			voidTy(VoidTypeID)
 		{}

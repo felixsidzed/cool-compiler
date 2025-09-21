@@ -21,7 +21,7 @@ namespace cc {
 
 			iterator(element* ptr) : current(ptr) {}
 
-			T& operator*() { return *current->data; }
+			T* operator*() { return current->data; }
 			T* operator->() { return current->data; }
 
 			iterator& operator++() { 

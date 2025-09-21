@@ -18,6 +18,11 @@ namespace cc {
 		FunctionTypeID
 	};
 
+	enum ValueKind : uint8_t {
+		ConstantValueKind,
+		GlobalValueKind
+	};
+
 	class Context;
 	class PointerType;
 
@@ -48,8 +53,9 @@ namespace cc {
 	public:
 		Type* type;
 		const char* name;
+		ValueKind vk;
 
-		Value(Type* type, const char* name) : type(type), name(name) {};
+		Value(Type* type, const char* name, ValueKind vk) : type(type), name(name), vk(vk) {};
 
 		virtual string dump() { return name; };
 	};
