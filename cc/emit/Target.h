@@ -12,18 +12,22 @@
 namespace cc {
 	class Module;
 
+	enum Arch : uint8_t {
+		x86Arch,
+		UnknownArch
+	};
+
+	struct ArchBf {
+		bool is64 : 1;
+		Arch arch : 6;
+	};
+
 	class Target {
 	public:
-		enum Arch {
-			x86Arch,
-			x64Arch,
-			UnknownArch
-		};
+		std::endian endian;
+		ArchBf arch;
 
-		std::endian endian : 1;
-		Arch arch : 3;
-
-		Target(std::endian endian, Arch arch) : endian(endian), arch(arch) {};
+		Target(std::endian endian, ArchBf arch) : endian(endian), arch(arch) {};
 
 		template<typename T>
 		void encode(EmissionContext* ctx, T value) const { return encode(ctx, value, sizeof(T) * 8); }

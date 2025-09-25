@@ -78,16 +78,14 @@ namespace cc {
 		element& operator[](uint32_t i) { return data[i]; }
 		const element& operator[](uint32_t i) const { return data[i]; }
 
-		template <typename T = V>
-		std::enable_if_t<std::is_default_constructible_v<T>>& operator[](const K& key) {
+		V& operator[](const K& key) {
 			if (auto* v = find(key))
 				return *v;
 			data.emplace(key, V{});
 			return data[data.size - 1].second;
 		}
 
-		template <typename T = V>
-		std::enable_if_t<std::is_default_constructible_v<T>>& operator[](K&& key) {
+		V& operator[](K&& key) {
 			if (auto* v = find(key))
 				return *v;
 			data.emplace(std::move(key), V{});

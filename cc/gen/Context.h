@@ -22,6 +22,7 @@ namespace cc {
 
 	private:
 		friend class Type;
+		friend class ConstantFP;
 		friend class FunctionType;
 		friend class ConstantInteger;
 
@@ -38,6 +39,8 @@ namespace cc {
 		map<uint8_t, std::unique_ptr<ConstantInteger>> int0Const;
 		map<uint8_t, std::unique_ptr<ConstantInteger>> int1Const;
 		map<uint64_t, std::unique_ptr<ConstantInteger>> intConst;
+
+		map<double, std::unique_ptr<ConstantFP>> fpConst;
 	};
 
 	Context& getGlobalContext();

@@ -1,46 +1,27 @@
-1. LLVMGetTypeKind
-2. LLVMGetElementType
-3. LLVMGlobalGetValueType
-4. LLVMIsConstant
-5. LLVMConstInt
-6. LLVMConstIntGetSExtValue
-7. LLVMConstReal
-8. LLVMConstRealGetDouble
-9. LLVMAddGlobal
-10. LLVMSetLinkage
-11. LLVMSetInitializer
-12. LLVMGetNamedFunction
-13. LLVMTypeOf
-14. LLVMCountParamTypes
-15. LLVMGetParamTypes
-16. LLVMIsFunctionVarArg
-17. LLVMGetParam
-18. LLVMAddAttributeAtIndex
-19. LLVMCreateEnumAttribute
-20. LLVMGetAttributeCountAtIndex
-21. LLVMGetAttributesAtIndex
-22. LLVMGetEnumAttributeKind
-23. LLVMBuildAlloca
-24. LLVMBuildStore
-25. LLVMBuildLoad
-26. LLVMBuildGlobalString
-27. LLVMBuildBitCast
-28. LLVMBuildNot
-29. LLVMBuildAnd
-30. LLVMBuildOr
-31. LLVMBuildAdd
-32. LLVMBuildFAdd
-33. LLVMBuildSub
-34. LLVMBuildFSub
-35. LLVMBuildMul
-36. LLVMBuildFMul
-37. LLVMBuildSDiv
-38. LLVMBuildFDiv
-39. LLVMBuildICmp
-40. LLVMBuildFCmp
-41. LLVMBuildBr
-42. LLVMBuildCondBr
-43. LLVMGetInsertBlock
-44. LLVMBuildUnreachable
-45. LLVMSetFunctionCallConv
-46. LLVMBuildCall
+1. LLVMGetElementType				#
+2. LLVMIsConstant					#
+3. LLVMConstInt						#
+4. LLVMConstIntGetSExtValue			#
+5. LLVMConstReal					#
+6. LLVMConstRealGetDouble			#
+7. LLVMAddGlobal					#
+8. LLVMSetLinkage					#
+9. LLVMSetInitializer				#
+10. LLVMGetParam					#
+11. LLVMAddAttributeAtIndex
+12. LLVMBuildAlloca
+13. LLVMBuildStore
+14. LLVMBuildLoad
+15. LLVMBuildGlobalString
+16. LLVMBuildBitCast
+17. LLVMBuildNot
+18. LLVMBuildAnd
+19. LLVMBuildOr
+20. LLVMBuildAdd
+21. LLVMBuildSub
+22. LLVMBuildMul
+23. LLVMBuildSDiv
+24. LLVMBuildCmp
+25. LLVMBuildBr
+26. LLVMSetFunctionCallConv
+27. LLVMBuildCall

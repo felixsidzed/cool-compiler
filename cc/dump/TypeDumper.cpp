@@ -7,8 +7,6 @@ namespace cc {
 		switch (typeId) {
 			case VoidTypeID:
 				return "void";
-			case BooleanTypeID:
-				return "bool";
 			case FloatTypeID:
 				return "float";
 			case DoubleTypeID:

@@ -4,6 +4,7 @@
 #include <type_traits>
 
 #include "Values.h"
+#include "ComplexTypes.h"
 
 namespace cc {
 	extern Context& getGlobalContext();
@@ -26,6 +27,11 @@ namespace cc {
 		static ConstantInteger* get(Context& ctx, uint64_t val, uint8_t width, bool sign = true);
 
 		string dump() override;
+
+		long long getSExtValue() {
+			uint8_t width = ((IntegerType*)type)->width;
+			return (long long)(val << (64 - width)) >> (64 - width);
+		}
 	private:
 		template<typename T>
 		static inline constexpr int bitwidth() {
@@ -34,5 +40,17 @@ namespace cc {
 			else
 				return std::numeric_limits<T>::digits + (std::numeric_limits<T>::is_signed);
 		}
+	};
+
+	class ConstantFP : public Value {
+	public:
+		double val;
+
+		ConstantFP(Type* type, double val) : Value(type, nullptr, ConstantValueKind), val(val) {};
+
+		static ConstantFP* get(double val, uint8_t width);
+		static ConstantFP* get(Context& ctx, double val, uint8_t width);
+
+		string dump() override;
 	};
 }

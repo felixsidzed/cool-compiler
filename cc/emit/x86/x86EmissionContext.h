@@ -7,6 +7,15 @@
 struct _IMAGE_SECTION_HEADER;
 typedef _IMAGE_SECTION_HEADER IMAGE_SECTION_HEADER;
 
+struct _IMAGE_FILE_HEADER;
+typedef _IMAGE_FILE_HEADER IMAGE_FILE_HEADER;
+
+struct _IMAGE_SYMBOL;
+typedef _IMAGE_SYMBOL IMAGE_SYMBOL;
+
+struct _IMAGE_BASE_RELOCATION;
+typedef _IMAGE_BASE_RELOCATION IMAGE_BASE_RELOCATION;
+
 namespace cc {
 	enum x86Register : uint8_t {
 		REG_AL, REG_CL, REG_DL, REG_BL,
@@ -44,10 +53,13 @@ namespace cc {
 	};
 
 	struct x86EmissionContext : public EmissionContext {
-		IMAGE_SECTION_HEADER* sh = nullptr;
 		x86Register reg = REG_AL;
 		x86GeneralRegister greg = GREG_AX;
 
-		x86EmissionContext(std::vector<uint8_t>& buffer, Target* target, IMAGE_SECTION_HEADER* sh) : EmissionContext(buffer, target), sh(sh) {}
+		std::vector<IMAGE_SYMBOL>& symbols;
+		std::vector<IMAGE_BASE_RELOCATION>& relocs;
+
+		x86EmissionContext(std::vector<uint8_t>& buffer, Target* target, std::vector<IMAGE_SYMBOL>& symbols, std::vector<IMAGE_BASE_RELOCATION>& relocs)
+			: EmissionContext(buffer, target), symbols(symbols), relocs(relocs) {}
 	};
 }

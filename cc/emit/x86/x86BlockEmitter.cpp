@@ -5,21 +5,12 @@
 #include "../../gen/Block.h"
 #include "x86EmissionContext.h"
 #include "../../gen/Constant.h"
+#include "../../gen/Function.h"
 #include "x86InstructionEmitter.h"
 #include "../../gen/Instruction.h"
 #include "../../gen/ComplexTypes.h"
 
 namespace cc {
-	static x86Register width2reg(x86GeneralRegister greg, uint8_t width) {
-		switch (width) {
-			case 8:  return (x86Register)greg;
-			case 16: return (x86Register)(greg + 16);
-			case 32: return (x86Register)(greg + 32);
-			case 64: return (x86Register)(greg + 48);
-			default: return REG_AL;
-		}
-	}
-
 	void x86BlockEmitter::emit(EmissionContext* ctx_, Block* block) {
 		x86EmissionContext* ctx = (x86EmissionContext*)ctx_;
 
@@ -33,7 +24,6 @@ namespace cc {
 				} break;
 
 				default:
-				invalid:
 					ctx->buffer.push_back(0xCC);
 					break;
 			}
@@ -48,12 +38,24 @@ namespace cc {
 				switch (val_->type->typeId) {
 					case IntegerTypeID: {
 						uint8_t width = ((IntegerType*)val_->type)->width;
-						x86InstructionEmitter::integerMov(ctx, width2reg(ctx->greg, width), ((ConstantInteger*)val_)->val, width);
+						x86InstructionEmitter::imov(ctx, size2reg(ctx->greg, width), ((ConstantInteger*)val_)->val, width);
+					} break;
+
+					case FloatTypeID: {
+						x86InstructionEmitter::fpmov(ctx, size2reg(ctx->greg, 32), ((ConstantFP*)val_)->val, 32);
+					} break;
+
+					case DoubleTypeID: {
+						x86InstructionEmitter::fpmov(ctx, size2reg(ctx->greg, 64), ((ConstantFP*)val_)->val, 64);
 					} break;
 
 					default:
 						goto invalid;
 				}
+			} break;
+
+			case ArgumentValueKind: {
+				x86InstructionEmitter::ldarg(ctx, ctx->greg, (Argument*)val_);
 			} break;
 
 			default:

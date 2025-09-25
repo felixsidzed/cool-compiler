@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <cstdint>
 
 #include "../string.h"
@@ -8,7 +9,6 @@ namespace cc {
 	enum TypeID : uint8_t {
 		// primitive types (sorted by size)
 		VoidTypeID,
-		BooleanTypeID,
 		FloatTypeID,
 		DoubleTypeID,
 
@@ -20,7 +20,8 @@ namespace cc {
 
 	enum ValueKind : uint8_t {
 		ConstantValueKind,
-		GlobalValueKind
+		GlobalValueKind,
+		ArgumentValueKind
 	};
 
 	class Context;
@@ -47,6 +48,8 @@ namespace cc {
 		static Type* getInteger(Context& ctx, uint8_t bidwith, bool sign = true);
 
 		virtual string dump();
+
+		Type* getElementType();
 	};
 
 	class Value {
@@ -57,6 +60,8 @@ namespace cc {
 
 		Value(Type* type, const char* name, ValueKind vk) : type(type), name(name), vk(vk) {};
 
-		virtual string dump() { return name; };
+		virtual string dump() { return ("\"" + std::string(name) + "\"").c_str(); };
+
+		bool isConstant() { return vk == ConstantValueKind; };
 	};
 }

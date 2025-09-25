@@ -9,7 +9,6 @@
 
 namespace cc {
 	static void _deleter(Type* ty) { delete ty; }
-	static void _deleter(FunctionType* ty) { delete ty; }
 
 	Type* Type::getVoid() { return getVoid(getGlobalContext()); };
 	Type* Type::getBool() { return getBool(getGlobalContext()); };
@@ -49,6 +48,12 @@ namespace cc {
 		}
 	};
 
+	Type* Type::getElementType() {
+		if (typeId == PointerTypeID)
+			return ((PointerType*)this)->pointee;
+		return nullptr;
+	}
+
 	FunctionType* FunctionType::get(Type* returnType, Type** args, uint32_t nargs, bool vararg) {
 		return get(getGlobalContext(), returnType, args, nargs, vararg);
 	}
@@ -60,7 +65,7 @@ namespace cc {
 				return ftype.second.get();
 		}
 		
-		auto entry = std::unique_ptr<FunctionType, void(*)(FunctionType*)>(new FunctionType(returnType, args, nargs, vararg), _deleter);
+		auto entry = std::unique_ptr<FunctionType, void(*)(FunctionType*)>(new FunctionType(returnType, args, nargs, vararg), (void(*)(FunctionType*))_deleter);
 		FunctionType* entryPtr = entry.get();
 		ctx.ftypeToType.insert(hash, std::move(entry));
 		return entryPtr;

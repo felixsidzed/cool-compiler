@@ -19,7 +19,7 @@ namespace cc {
 			other.size = 0;
 			other.capacity = 0;
 		}
-		vector(uint32_t size = CC_VECTOR_CHUNK_SIZE) : size(0), capacity(size), data((T*)::operator new(size * sizeof(T))) {}
+		vector(uint32_t size = CC_VECTOR_CHUNK_SIZE) : size(0), capacity(size), data((T*)::operator new(size * sizeof(T))) {};
 
 		template<typename U = T, typename = typename std::enable_if<std::is_copy_constructible<U>::value>::type>
 		vector(const std::initializer_list<T>& init) :
@@ -47,20 +47,20 @@ namespace cc {
 		template<typename U = T>
 		typename std::enable_if<std::is_copy_constructible<U>::value>::type
 		push(const T& value) {
-			resize(size + 1);
+			grow();
 			new (&data[size]) T(value);
 			size++;
 		}
 
 		void push(T&& value) {
-			resize(size + 1);
+			grow();
 			new (&data[size]) T(std::move(value));
 			size++;
 		}
 
 		template <typename... Args>
 		T* emplace(Args&&... args) {
-			resize(size + 1);
+			grow();
 			T* place = &data[size];
 			new (place) T(std::forward<Args>(args)...);
 			size++;
@@ -122,9 +122,24 @@ namespace cc {
 			return *this;
 		}
 
-	private:
-		void resize(uint32_t ns) {
+		void reserve(uint32_t ns) {
 			if (ns <= capacity)
+				return;
+
+			T* newData = (T*)::operator new(ns * sizeof(T));
+			for (uint32_t i = 0; i < size; ++i) {
+				new (&newData[i]) T(std::move(data[i]));
+				data[i].~T();
+			}
+			::operator delete(data, capacity * sizeof(T));
+			
+			capacity = ns;
+			data = newData;
+		}
+
+	private:
+		void grow() {
+			if (size + 1 <= capacity)
 				return;
 
 			uint32_t nc = capacity + CC_VECTOR_CHUNK_SIZE;
