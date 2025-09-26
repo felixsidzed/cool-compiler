@@ -21,7 +21,8 @@ namespace cc {
 	enum ValueKind : uint8_t {
 		ConstantValueKind,
 		GlobalValueKind,
-		ArgumentValueKind
+		ArgumentValueKind,
+		InstructionValueKind
 	};
 
 	class Context;
@@ -60,7 +61,7 @@ namespace cc {
 
 		Value(Type* type, const char* name, ValueKind vk) : type(type), name(name), vk(vk) {};
 
-		virtual string dump() { return ("\"" + std::string(name) + "\"").c_str(); };
+		virtual string dump() { return name; };
 
 		bool isConstant() { return vk == ConstantValueKind; };
 	};

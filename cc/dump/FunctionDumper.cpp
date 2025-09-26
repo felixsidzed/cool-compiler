@@ -1,8 +1,23 @@
 #include "../gen/Function.h"
 
+static const char* attrNames[] = {
+	"noreturn",
+	"inline"
+};
+
 namespace cc {
 	string Function::dump() {
 		std::string result;
+
+		if (!attrs.empty()) {
+			for (uint32_t i = 0; i < attrs.size; i++) {
+				if (i > 0) result += ", ";
+				result.append(1, '@');
+				result.append(attrNames[attrs[i]]);
+			}
+		}
+		result.append(1, '\n');
+
 		switch (linkage) {
 		case PublicLinkage:
 			result += "public ";
@@ -20,16 +35,18 @@ namespace cc {
 
 		result += "func ";
 		result.append(name);
-		result += "(";
+		result.append(1, '(');
 
 		FunctionType* ftype = (FunctionType*)type;
 
-		getArg(0);
-		for (uint32_t i = 0; i < args.size; ++i) {
-			if (i > 0) result += ", ";
-			result += ftype->args[i]->dump();
-			result += " ";
-			result += args[i].dump();
+		if (!args.empty()) {
+			getArg(0);
+			for (uint32_t i = 0; i < args.size; i++) {
+				if (i > 0) result += ", ";
+				result += ftype->args[i]->dump();
+				result += " ";
+				result += args[i].dump();
+			}
 		}
 
 		if (ftype->vararg) {
@@ -40,7 +57,7 @@ namespace cc {
 
 		result += ") -> ";
 		result += ftype->returnType->dump();
-		result += "\n";
+		result.append(1, '\n');
 
 		for (auto& block : blocks) {
 			result.append(block.name);
@@ -53,9 +70,10 @@ namespace cc {
 				pos = blockResult.find('\n', pos);
 				if (pos == std::string::npos)
 					break;
-				pos += 3;
+				pos += 1;
 			}
 			result += blockResult;
+			result.erase(result.find_last_not_of('\n') + 1);
 		}
 
 		result += "\nend";

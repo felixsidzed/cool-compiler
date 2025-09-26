@@ -8,9 +8,9 @@
 8. LLVMSetLinkage					#
 9. LLVMSetInitializer				#
 10. LLVMGetParam					#
-11. LLVMAddAttributeAtIndex
-12. LLVMBuildAlloca
-13. LLVMBuildStore
+11. LLVMAddAttributeAtIndex			#
+12. LLVMBuildAlloca					#
+13. LLVMBuildStore					#
 14. LLVMBuildLoad
 15. LLVMBuildGlobalString
 16. LLVMBuildBitCast
@@ -25,3 +25,7 @@
 25. LLVMBuildBr
 26. LLVMSetFunctionCallConv
 27. LLVMBuildCall
+
+EXTRA:
+1. implement inlining
+2. more checks

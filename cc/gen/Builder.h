@@ -15,6 +15,8 @@ namespace cc {
 		
 		void insertInto(Block* b);
 
-		void ret(Value* val);
+		RetInstruction* ret(Value* val);
+		AllocaInstruction* alloca_(Type* type, const char* name = "");
+		StoreInstruction* store(Value* ptr, Value* val, const char* name = "");
 	};
 }

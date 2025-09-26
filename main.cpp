@@ -12,16 +12,15 @@ int main() {
 
 	cc::Function* fmain = module->addFunction(
 		"main",
-		cc::FunctionType::get(cc::Type::getInteger(32), nullptr, 0, false)
+		cc::FunctionType::get(cc::Type::getPointer(cc::Type::getInteger(32)), nullptr, 0, false)
 	);
 
 	cc::Builder b;
 	b.insertInto(fmain->appendBlock("entry"));
 
-	cc::Global* g = module->addGlobal("val", nullptr, cc::Type::getInteger(32));
-	g->initializer = cc::ConstantInteger::get(67);
-
-	b.ret(cc::ConstantInteger::get(67));
+	auto al = b.alloca_(cc::Type::getInteger(32));
+	b.store(al, cc::ConstantInteger::get(67));
+	b.ret(al);
 
 	std::cout << module->dump() << std::endl;
 

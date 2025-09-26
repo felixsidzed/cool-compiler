@@ -4,12 +4,6 @@
 
 #include "../EmissionContext.h"
 
-struct _IMAGE_SECTION_HEADER;
-typedef _IMAGE_SECTION_HEADER IMAGE_SECTION_HEADER;
-
-struct _IMAGE_FILE_HEADER;
-typedef _IMAGE_FILE_HEADER IMAGE_FILE_HEADER;
-
 struct _IMAGE_SYMBOL;
 typedef _IMAGE_SYMBOL IMAGE_SYMBOL;
 

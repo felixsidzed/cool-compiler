@@ -60,6 +60,7 @@ namespace cc {
 
 			if (strcmp((char*)sh.Name, ".text") == 0) {
 				x86BlockEmitter be;
+				ctx.blockEmitter = &be;
 				for (auto& func : module->functions)
 					for (auto& block : func.blocks)
 						be.emit(&ctx, &block);
@@ -82,7 +83,7 @@ namespace cc {
 		}
 
 		uint32_t sizeofSt = 4;
-		uint32_t stOffset = buffer.size();
+		uint32_t stOffset = (uint32_t)buffer.size();
 		buffer.resize(buffer.size() + sizeofSt, 0);
 		memcpy_s(buffer.data() + stOffset, sizeofSt, &sizeofSt, sizeofSt);
 

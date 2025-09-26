@@ -5,8 +5,10 @@
 namespace cc {
 	string Block::dump() {
 		std::string result;
-		for (auto insn : instructions)
+		for (auto insn : instructions) {
 			result += insn->dump();
+			result.append(1, '\n');
+		}
 		return result.c_str();
 	}
 }

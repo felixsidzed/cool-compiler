@@ -11,6 +11,11 @@
 namespace cc {
 	class Module;
 
+	enum Attribute : uint8_t {
+		NoReturnAttribute,
+		InlineAttribute
+	};
+
 	class Argument : public Value {
 	public:
 		uint8_t idx;
@@ -25,13 +30,14 @@ namespace cc {
 		Scope scope;
 		vector<Block> blocks;
 		vector<Argument> args;
+		vector<Attribute> attrs;
 		
 		Function(const char* name, FunctionType* ftype, Module* parent) : Global(PublicLinkage, this, ftype, name), parent(parent) {};
 		
 		Value* getArg(uint32_t arg);
 		Block* appendBlock(const char* name);
 
-		string dump();
+		string dump() override;
 	private:
 		bool argsBuilt : 1 = false;
 	};

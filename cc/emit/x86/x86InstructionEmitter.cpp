@@ -38,38 +38,38 @@ namespace cc {
 	void x86InstructionEmitter::imov(x86EmissionContext* ctx, x86Register reg, uint64_t val, uint8_t width) {
 		if (val == 0) {
 			if (width == 8) {
-				ctx->buffer.push_back(0x30);
-				ctx->buffer.push_back(0xC0 | ((reg & 7) << 3) | (reg & 7));
+				ctx->buffer.push_back(0x30);								// xor r/m8, r8
+				ctx->buffer.push_back(0xC0 | ((reg & 7) << 3) | (reg & 7));	// modr/m
 			} else if (width == 16) {
-				ctx->buffer.push_back(0x66);
-				ctx->buffer.push_back(0x31);
+				ctx->buffer.push_back(0x66);								// operand-size override prefix
+				ctx->buffer.push_back(0x31);								// xor r/m16, r16
 				ctx->buffer.push_back(0xC0 | ((reg & 7) << 3) | (reg & 7));
 			} else if (width == 32) {
-				ctx->buffer.push_back(0x31);
+				ctx->buffer.push_back(0x31);								// xor r/m32, r32
 				ctx->buffer.push_back(0xC0 | ((reg & 7) << 3) | (reg & 7));
 			} else if (width == 64) {
 				assert(ctx->target->arch.is64); // TODO: proper 32-bit support
 
-				ctx->buffer.push_back(0x48);
-				ctx->buffer.push_back(0x31);
+				ctx->buffer.push_back(0x48);								// rex.w
+				ctx->buffer.push_back(0x31);								// xor r/m64, r64
 				ctx->buffer.push_back(0xC0 | ((reg & 7) << 3) | (reg & 7));
 			}
 		} else {
 			if (width == 8) {
-				ctx->buffer.push_back(0xB0 | (reg & 7));
+				ctx->buffer.push_back(0xB0 | (reg & 7));					// mov r8, imm8
 				ctx->buffer.push_back((uint8_t)val);
 			} else if (width == 16) {
-				ctx->buffer.push_back(0x66);
-				ctx->buffer.push_back(0xB8 | (reg & 7));
+				ctx->buffer.push_back(0x66);								// operand-size override prefix
+				ctx->buffer.push_back(0xB8 | (reg & 7));					// mov r16, imm16
 				ctx->target->encode(ctx, val, width);
 			} else if (width == 32) {
-				ctx->buffer.push_back(0xB8 | (reg & 7));
+				ctx->buffer.push_back(0xB8 | (reg & 7));					// mov r32, imm32
 				ctx->target->encode(ctx, val, width);
 			} else if (width == 64) {
 				assert(ctx->target->arch.is64); // TODO: proper 32-bit support
 
-				ctx->buffer.push_back(0x48);
-				ctx->buffer.push_back(0xB8 | (reg & 7));
+				ctx->buffer.push_back(0x48);								// rex.w
+				ctx->buffer.push_back(0xB8 | (reg & 7));					// movabs r64, imm64
 				ctx->target->encode(ctx, val, width);
 			}
 		}
@@ -83,7 +83,7 @@ namespace cc {
 			} conv;
 			conv.f = (float)val;
 
-			ctx->buffer.push_back(0xB8 | (reg & 7));
+			ctx->buffer.push_back(0xB8 | (reg & 7));	// mov r32, imm32
 			ctx->target->encode(ctx, conv.n, width);
 		} else if (width == 64) {
 			assert(ctx->target->arch.is64); // TODO: proper 32-bit support
@@ -94,8 +94,8 @@ namespace cc {
 			} conv;
 			conv.f = val;
 
-			ctx->buffer.push_back(0x48);
-			ctx->buffer.push_back(0xB8 | (reg & 7));
+			ctx->buffer.push_back(0x48);				// rex.w
+			ctx->buffer.push_back(0xB8 | (reg & 7));	// mov r64, imm64
 			ctx->target->encode(ctx, conv.n, width);
 		}
 	}
@@ -109,26 +109,26 @@ namespace cc {
 			case 8: {
 				if (arg->idx < 2) {
 					uint8_t src = (arg->idx == 0) ? 1 : 2;
-					ctx->buffer.push_back(0x8A);
-					ctx->buffer.push_back(0xC0 | ((greg & 7) << 3) | (src & 7));
+					ctx->buffer.push_back(0x8A);									// mov r8, r/m8
+					ctx->buffer.push_back(0xC0 | ((greg & 7) << 3) | (src & 7));	// modr/m
 				} else {
-					ctx->buffer.push_back(0x8A);
-					ctx->buffer.push_back(0x84 | ((greg & 7) << 3));
-					ctx->buffer.push_back(0x24);
+					ctx->buffer.push_back(0x8A);									// mov r8, r/m8
+					ctx->buffer.push_back(0x84 | ((greg & 7) << 3));				// modr/m
+					ctx->buffer.push_back(0x24);									// sib
 					ctx->buffer.push_back(stackAlignment * (arg->idx - 1));
 				}
 			} break;
 
 			case 16: {
-				ctx->buffer.push_back(0x66);
+				ctx->buffer.push_back(0x66);										// operand-size override prefix
 				if (arg->idx < 2) {
 					uint8_t src = (arg->idx == 0) ? 1 : 2;
-					ctx->buffer.push_back(0x8B);
-					ctx->buffer.push_back(0xC0 | ((greg & 7) << 3) | (src & 7));
+					ctx->buffer.push_back(0x8B);									// mov r16, r/m16
+					ctx->buffer.push_back(0xC0 | ((greg & 7) << 3) | (src & 7));	// modr/m
 				} else {
-					ctx->buffer.push_back(0x8B);
-					ctx->buffer.push_back(0x84 | ((greg & 7) << 3));
-					ctx->buffer.push_back(0x24);
+					ctx->buffer.push_back(0x8B);									// mov r16, r/m16
+					ctx->buffer.push_back(0x84 | ((greg & 7) << 3));				// modr/m
+					ctx->buffer.push_back(0x24);									// sib
 					ctx->buffer.push_back(stackAlignment * (arg->idx - 1));
 				}
 			} break;
@@ -136,12 +136,12 @@ namespace cc {
 			case 32: {
 				if (arg->idx < 2) {
 					uint8_t src = (arg->idx == 0) ? 1 : 2;
-					ctx->buffer.push_back(0x8B);
-					ctx->buffer.push_back(0xC0 | ((greg & 7) << 3) | (src & 7));
+					ctx->buffer.push_back(0x8B);									// mov r32, r/m32
+					ctx->buffer.push_back(0xC0 | ((greg & 7) << 3) | (src & 7));	// modr/m
 				} else {
-					ctx->buffer.push_back(0x8B);
-					ctx->buffer.push_back(0x84 | ((greg & 7) << 3));
-					ctx->buffer.push_back(0x24);
+					ctx->buffer.push_back(0x8B);									// mov r32, r/m32
+					ctx->buffer.push_back(0x84 | ((greg & 7) << 3));				// modr/m
+					ctx->buffer.push_back(0x24);									// sib
 					ctx->buffer.push_back(stackAlignment * (arg->idx - 1));
 				}
 			} break;
@@ -152,23 +152,24 @@ namespace cc {
 
 				if (arg->idx < 4) {
 					const static x86Register regs[] = { REG_RCX, REG_RDX, REG_R8, REG_R9 };
+					x86Register reg = regs[arg->idx];
 
-					if (arg->idx > 2) rex |= 0x1;
+					if (reg >= REG_R8) rex |= 0x1;
 					
 					ctx->buffer.push_back(rex);
-					ctx->buffer.push_back(0x8B);
-					ctx->buffer.push_back(0xC0 | ((greg & 7) << 3) | (regs[arg->idx] & 7));
+					ctx->buffer.push_back(0x8B);									// mov r64, r/m64
+					ctx->buffer.push_back(0xC0 | ((greg & 7) << 3) | (reg & 7));	// modr/m
 				} else {
 					ctx->buffer.push_back(rex);
-					ctx->buffer.push_back(0x8B);
-					ctx->buffer.push_back(0x84 | ((greg & 7) << 3));
-					ctx->buffer.push_back(0x24);
+					ctx->buffer.push_back(0x8B);									// mov r64, r/m64
+					ctx->buffer.push_back(0x84 | ((greg & 7) << 3));				// modr/m
+					ctx->buffer.push_back(0x24);									// sib
 					ctx->buffer.push_back(stackAlignment * (arg->idx - 3));
 				}
 			} break;
 
 			default:
-				ctx->buffer.push_back(0xCC); // int3
+				ctx->buffer.push_back(0xCC);										// int3
 				break;
 		}
 	}

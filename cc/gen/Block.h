@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Scope.h"
 #include "Values.h"
 #include "Instruction.h"
 #include "../linked_list.h"
@@ -12,6 +13,8 @@ namespace cc {
 		Function* parent;
 		const char* name;
 		Instruction* terminator;
+
+		Scope scope;
 
 		linked_list<Instruction> instructions;
 		

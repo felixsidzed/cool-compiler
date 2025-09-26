@@ -44,10 +44,19 @@ namespace cc {
 		template<typename U = T, typename... Args>
 		U* push(Args&&... args) {
 			element* node = new element(new U(std::forward<Args>(args)...));
-			node->next = head;
-			head = node;
+			node->next = nullptr;
+
+			if (!head)
+				head = node;
+			else {
+				element* cur = head;
+				while (cur->next)
+					cur = cur->next;
+				cur->next = node;
+			}
+
 			size++;
-			return static_cast<U*>(node->data);
+			return (U*)node->data;
 		}
 
 		void pop() {
@@ -77,7 +86,7 @@ namespace cc {
 			if (!cur)
 				return nullptr;
 
-			return static_cast<U*>(cur->data);
+			return (U*)cur->data;
 		}
 
 		iterator begin() { return iterator(head); }
